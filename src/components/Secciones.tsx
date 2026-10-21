@@ -1,63 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Phone } from "lucide-react";
-import { CLINICA, NECESIDADES } from "@/lib/clinica";
+import { CLINICA } from "@/lib/clinica";
 import { ENLACES, Marca } from "./Nav";
 import { BotonesCita } from "./Pagina";
 import { Estado, HoyHorario } from "./ui";
-
-/** Tratamientos ordenados por lo que le pasa al paciente. */
-export function QueTePasa() {
-  return (
-    <section id="que-te-pasa" className="mx-auto max-w-[1280px] px-4 py-20 sm:px-8 sm:py-28">
-      <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-4">
-          <div className="lg:sticky lg:top-28">
-            <h2 className="t-seccion max-w-[12ch]">Cuéntanos qué te pasa</h2>
-            <p className="mt-5 max-w-sm leading-relaxed text-sonda">
-              No hace falta saber cómo se llama el tratamiento. Estas son las consultas más habituales y lo que hacemos
-              en cada caso.
-            </p>
-            <Link
-              href="/tratamientos"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-babero px-5 py-3 font-semibold transition-colors hover:bg-linea"
-            >
-              Ver todos los tratamientos
-            </Link>
-          </div>
-        </div>
-        <ul className="lg:col-span-8">
-          {NECESIDADES.map((n) => (
-            <li key={n.id} className="grid gap-3 border-t border-linea py-8 first:border-t-0 first:pt-0 sm:grid-cols-[1fr_1.15fr] sm:gap-10">
-              <h3 className="t-bloque">{n.titulo}</h3>
-              <div>
-                <p className="leading-relaxed text-placa/85">{n.texto}</p>
-                <p className="mt-3 text-[0.9rem] text-sonda">{n.tratamientos.join(", ")}</p>
-                <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
-                  <Link
-                    href={`/tratamientos/${n.slug}`}
-                    className="inline-flex items-center gap-2 text-[0.95rem] font-semibold underline decoration-linea decoration-2 underline-offset-4 transition-colors hover:decoration-placa"
-                  >
-                    Cómo lo tratamos
-                  </Link>
-                  <a
-                    href={CLINICA.telefonoHref}
-                    data-cta={`llamar-${n.id}`}
-                    className="inline-flex items-center gap-2 text-[0.95rem] font-semibold text-encia-osc underline decoration-encia/40 decoration-2 underline-offset-4 transition-colors hover:decoration-encia-osc"
-                  >
-                    <Phone className="size-4" strokeWidth={2.2} />
-                    Llamar para esto
-                  </a>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
 
 export function Pie() {
   return (

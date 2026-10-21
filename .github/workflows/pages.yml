@@ -30,6 +30,9 @@ jobs:
         env:
           # Ruta del repositorio en GitHub Pages, p. ej. /yolanda-vuelta
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # Clave de Google Maps (restringida al dominio) para las reseñas. Secreto del repositorio.
+          NEXT_PUBLIC_GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
+          NEXT_PUBLIC_GOOGLE_PLACE_ID: ${{ vars.GOOGLE_PLACE_ID }}
       - run: touch out/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
