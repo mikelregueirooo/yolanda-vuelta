@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { CLINICA } from "@/lib/clinica";
@@ -56,21 +56,39 @@ function Marcador({ progreso, capa, movil }: { progreso: MotionValue<number>; ca
 export function Portada() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const textoOpacidad = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-  const textoY = useTransform(scrollYProgress, [0, 0.1], [0, -32]);
-  const indiceOpacidad = useTransform(scrollYProgress, [0.14, 0.2, 0.95, 1], [0, 1, 1, 0]);
-  const pistaOpacidad = useTransform(scrollYProgress, [0, 0.04], [1, 0]);
-  const finalOpacidad = useTransform(scrollYProgress, [0.9, 0.97], [0, 1]);
+  // En el móvil la portada se queda quieta durante el primer tramo de scroll (unos 40vh),
+  // para que no empiece la animación al esconderse la barra del navegador o al tocar la pantalla.
+  const reposo = useRef(0);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const medir = () => {
+      const el = ref.current;
+      const recorrido = el ? el.offsetHeight - window.innerHeight : 0;
+      reposo.current = mq.matches && recorrido > 0 ? Math.min(0.3, (window.innerHeight * 0.4) / recorrido) : 0;
+    };
+    medir();
+    window.addEventListener("resize", medir);
+    return () => window.removeEventListener("resize", medir);
+  }, []);
+  const avance = useTransform(scrollYProgress, (v) => {
+    const z = reposo.current;
+    return z ? Math.max(0, (v - z) / (1 - z)) : v;
+  });
+  const textoOpacidad = useTransform(avance, [0, 0.1], [1, 0]);
+  const textoY = useTransform(avance, [0, 0.1], [0, -32]);
+  const indiceOpacidad = useTransform(avance, [0.14, 0.2, 0.95, 1], [0, 1, 1, 0]);
+  const pistaOpacidad = useTransform(avance, [0, 0.04], [1, 0]);
+  const finalOpacidad = useTransform(avance, [0.9, 0.97], [0, 1]);
 
   return (
-    <section id="inicio" ref={ref} className="relative h-[300vh] lg:h-[400vh]">
+    <section id="inicio" ref={ref} className="relative h-[340vh] lg:h-[400vh]">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {/* Fondo: un halo frío detrás de la muela */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_55%_at_68%_52%,#e3ecef_0%,transparent_70%)] max-lg:bg-[radial-gradient(85%_42%_at_50%_45%,#e3ecef_0%,transparent_70%)]"
         />
-        <Escena progreso={scrollYProgress} />
+        <Escena progreso={avance} />
 
         <div className="pointer-events-none relative mx-auto flex h-full max-w-[1280px] flex-col px-4 pt-24 sm:px-8 lg:justify-center lg:pt-0">
           {/* Portada */}
@@ -98,18 +116,18 @@ export function Portada() {
           <div className="relative mt-auto h-44 pb-24 lg:absolute lg:inset-y-0 lg:left-8 lg:mt-0 lg:h-auto lg:w-[24rem] lg:pb-0">
             <motion.div style={{ opacity: indiceOpacidad }} className="absolute inset-x-0 -top-8 flex gap-1.5 lg:hidden" aria-hidden>
               {CAPAS.map((c) => (
-                <Marcador key={c.nombre} progreso={scrollYProgress} capa={c} movil />
+                <Marcador key={c.nombre} progreso={avance} capa={c} movil />
               ))}
             </motion.div>
             <div className="relative h-full">
               {CAPAS.map((c) => (
-                <Capa key={c.nombre} progreso={scrollYProgress} capa={c} />
+                <Capa key={c.nombre} progreso={avance} capa={c} />
               ))}
             </div>
           </div>
           <motion.ol style={{ opacity: indiceOpacidad }} className="absolute right-8 top-1/2 hidden -translate-y-1/2 space-y-2 text-right text-[0.9rem] lg:block">
             {CAPAS.map((c) => (
-              <Marcador key={c.nombre} progreso={scrollYProgress} capa={c} />
+              <Marcador key={c.nombre} progreso={avance} capa={c} />
             ))}
           </motion.ol>
 
