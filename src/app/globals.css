@@ -1,26 +1,116 @@
 @import "tailwindcss";
 
+/* Paleta sacada de la consulta: bata, radiografía, sonda, babero y encía. */
+@theme {
+  --color-bata: #f8f9f7;
+  --color-placa: #1c2b3a;
+  --color-placa-2: #2b3f52;
+  --color-sonda: #5b6976;
+  --color-babero: #e3ecef;
+  --color-encia: #d46a76;
+  --color-encia-osc: #a63e4f;
+  --color-encia-clara: #f7dade;
+  --color-linea: #d5dde1;
+
+  --font-sans: var(--font-schibsted), system-ui, sans-serif;
+
+  --ease-salida: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bata);
+  color: var(--color-placa);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-encia-clara);
+  color: var(--color-placa);
+}
+
+/* Escala tipográfica: titulares compactos, cuerpo con aire. */
+.t-portada {
+  font-size: clamp(2.45rem, 6.2vw, 5.6rem);
+  font-weight: 800;
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+}
+.t-seccion {
+  font-size: clamp(1.95rem, 4.2vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.t-bloque {
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-encia-osc);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Odontograma */
+.odontograma .pieza > ellipse,
+.odontograma .pieza > rect,
+.odontograma .pieza > path:first-child {
+  fill: #fff;
+  stroke: var(--color-placa);
+  stroke-width: 1.4;
+  transition: fill 160ms ease, stroke 160ms ease;
+}
+.odontograma .pieza-surco {
+  fill: none !important;
+  stroke: var(--color-sonda) !important;
+  stroke-opacity: 0.55;
+  stroke-width: 1.1 !important;
+  stroke-linecap: round;
+}
+.odontograma .pieza-cuspide {
+  fill: var(--color-sonda);
+  opacity: 0.5;
+}
+.odontograma .numero {
+  fill: var(--color-sonda);
+  transition: fill 160ms ease;
+}
+.odontograma .diente:hover .pieza > :first-child {
+  fill: var(--color-babero);
+}
+.odontograma .diente.is-activo .pieza > :first-child {
+  fill: var(--color-encia-clara);
+  stroke: var(--color-encia-osc);
+  stroke-width: 2;
+}
+.odontograma .diente.is-activo .numero {
+  fill: var(--color-encia-osc);
+}
+.odontograma .diente:focus-visible .pieza > :first-child {
+  stroke: var(--color-encia-osc);
+  stroke-width: 2.4;
 }
