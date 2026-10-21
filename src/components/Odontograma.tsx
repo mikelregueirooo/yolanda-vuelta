@@ -46,23 +46,33 @@ function Pieza({ d }: { d: Diente }) {
 // Orden de aparición: desde el centro de la boca hacia atrás, como se explora.
 const retraso = (d: Diente) => 0.25 + (d.pos - 1) * 0.07 + (d.cuadrante >= 3 ? 0.12 : 0);
 
+// Recorte del dibujo para ver una sola arcada (en el móvil, al doble de tamaño).
+const VISTAS = {
+  ambas: `0 0 ${LIENZO.ancho} ${LIENZO.alto}`,
+  arriba: "44 18 512 330",
+  abajo: "44 312 512 334",
+} as const;
+export type Arcada = keyof typeof VISTAS;
+
 export function Odontograma({
   seleccionado,
   onSeleccionar,
+  arcada = "ambas",
 }: {
   seleccionado: number | null;
   onSeleccionar: (fdi: number) => void;
+  arcada?: Arcada;
 }) {
   const reduce = useReducedMotion();
   return (
     <svg
-      viewBox={`0 0 ${LIENZO.ancho} ${LIENZO.alto}`}
+      viewBox={VISTAS[arcada]}
       className="odontograma h-auto w-full select-none"
       role="group"
       aria-label="Ficha dental: toca el diente que te molesta"
     >
       {/* Trazos de las arcadas */}
-      {[true, false].map((arriba, i) => (
+      {[true, false].filter((arriba) => arcada === "ambas" || (arcada === "arriba") === arriba).map((arriba, i) => (
         <motion.path
           key={i}
           d={curvaArcada(arriba)}
@@ -93,7 +103,7 @@ export function Odontograma({
         Dientes de abajo
       </text>
 
-      {DIENTES.map((d) => {
+      {DIENTES.filter((d) => arcada === "ambas" || (arcada === "arriba") === d.cuadrante <= 2).map((d) => {
         const activo = seleccionado === d.fdi;
         return (
           <motion.g

@@ -40,7 +40,7 @@ export default function Escena({ progreso }: { progreso: MotionValue<number> }) 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const renderer = new WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 768 ? 1.75 : 2));
     renderer.outputColorSpace = SRGBColorSpace;
     renderer.localClippingEnabled = true;
     renderer.toneMapping = ACESFilmicToneMapping;
@@ -157,15 +157,18 @@ export default function Escena({ progreso }: { progreso: MotionValue<number> }) 
       const v = progreso.get();
       const vertical = camara.aspect < 0.9;
 
-      // 1. Portada: a la derecha y girando despacio. 2. Al bajar: al centro y algo más grande.
-      const centrar = tramo(v, 0, 0.22);
+      // 1. Portada: a la derecha (en el móvil, asomando bajo el botón). 2. Al bajar: centrada.
+      // En el móvil se queda en la mitad de arriba, dejando sitio al texto de cada capa.
+      const centrar = tramo(v, 0, 0.16);
       const xIni = vertical ? 0 : ancho * 0.22;
-      const yIni = vertical ? -alto * 0.36 : 0.1;
+      const yIni = vertical ? -alto * 0.34 : 0.1;
+      const yFin = vertical ? alto * 0.12 : 0.05;
       muela.position.x = MathUtils.lerp(xIni, 0, centrar);
-      muela.position.y = MathUtils.lerp(yIni, vertical ? 0.2 : 0.05, centrar) + Math.sin(t * 0.9) * 0.05 * (1 - centrar);
+      muela.position.y = MathUtils.lerp(yIni, yFin, centrar) + Math.sin(t * 0.9) * 0.05 * (1 - centrar);
       const base = Math.min(1, alto / 5.2, (ancho / 2.6) * 0.95);
-      const ini = vertical ? 0.62 : 1;
-      muela.scale.setScalar(base * MathUtils.lerp(ini, vertical ? 0.95 : 1.18, centrar));
+      const ini = vertical ? 0.58 : 1;
+      const fin = vertical ? 0.74 : 1.18;
+      muela.scale.setScalar(base * MathUtils.lerp(ini, fin, centrar));
 
       // Giro: vuelta y media a lo largo del recorrido, más el ratón en la portada
       const libre = 1 - centrar;
@@ -176,8 +179,8 @@ export default function Escena({ progreso }: { progreso: MotionValue<number> }) 
       muela.rotation.z = MathUtils.damp(muela.rotation.z, -0.12 * libre, 6, dt);
 
       // 3. Cortes: primero se abre el esmalte, después la dentina
-      corteEsmalte.constant = MathUtils.lerp(4, 0, tramo(v, 0.3, 0.46));
-      corteDentina.constant = MathUtils.lerp(4, -0.02, tramo(v, 0.52, 0.68));
+      corteEsmalte.constant = MathUtils.lerp(4, 0, tramo(v, 0.2, 0.36));
+      corteDentina.constant = MathUtils.lerp(4, -0.02, tramo(v, 0.41, 0.57));
 
       renderer.render(scene, camara);
       frame = requestAnimationFrame(pintar);

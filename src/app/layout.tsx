@@ -57,7 +57,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${schibsted.variable} antialiased`}>
+    <html lang="es" className={`${schibsted.variable} antialiased`} suppressHydrationWarning>
       <body>
         <script
           type="application/ld+json"

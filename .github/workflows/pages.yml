@@ -1,8 +1,7 @@
 name: Publicar en GitHub Pages
 
+# Solo se publica a mano (pestaña Actions > Publicar en GitHub Pages > Run workflow).
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DIENTES, ZONAS } from "@/lib/dientes";
-import { Odontograma } from "./Odontograma";
+import { Odontograma, type Arcada } from "./Odontograma";
 import { waHref } from "@/lib/clinica";
 import { Llamar } from "./ui";
 import { IconoWhatsApp } from "./WhatsApp";
@@ -82,7 +82,19 @@ function Ficha({ fdi, onLimpiar }: { fdi: number | null; onLimpiar: () => void }
 
 export function FichaDental() {
   const [fdi, setFdi] = useState<number | null>(null);
+  const [movil, setMovil] = useState<"arriba" | "abajo">("arriba");
+  const [estrecho, setEstrecho] = useState(false);
   const fichaMovil = useRef<HTMLDivElement>(null);
+
+  // En pantallas estrechas se ve una arcada cada vez, al doble de tamaño, para poder tocar bien.
+  useEffect(() => {
+    const m = window.matchMedia("(max-width: 767px)");
+    const f = () => setEstrecho(m.matches);
+    f();
+    m.addEventListener("change", f);
+    return () => m.removeEventListener("change", f);
+  }, []);
+  const arcada: Arcada = estrecho ? movil : "ambas";
 
   // En el móvil la ficha queda bajo el dibujo: la acercamos al tocar un diente.
   useEffect(() => {
@@ -107,7 +119,20 @@ export function FichaDental() {
 
         <div className="lg:col-span-7">
           <div className="mx-auto max-w-[620px]">
-            <Odontograma seleccionado={fdi} onSeleccionar={(n) => setFdi((v) => (v === n ? null : n))} />
+            <div role="tablist" aria-label="Qué dientes ver" className="mb-4 grid grid-cols-2 gap-1 rounded-full bg-babero p-1 md:hidden">
+              {(["arriba", "abajo"] as const).map((a) => (
+                <button
+                  key={a}
+                  role="tab"
+                  aria-selected={movil === a}
+                  onClick={() => setMovil(a)}
+                  className={`rounded-full py-2.5 text-[0.95rem] font-semibold transition-colors ${movil === a ? "bg-white shadow-sm" : "text-sonda"}`}
+                >
+                  Dientes de {a}
+                </button>
+              ))}
+            </div>
+            <Odontograma arcada={arcada} seleccionado={fdi} onSeleccionar={(n) => setFdi((v) => (v === n ? null : n))} />
           </div>
         </div>
 

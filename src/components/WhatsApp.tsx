@@ -157,7 +157,7 @@ export function ContactoRapido() {
             <a
               href={CLINICA.telefonoHref}
               data-cta="llamar-barra"
-              className="flex h-14 flex-1 items-center justify-center gap-3 rounded-full bg-placa font-semibold text-bata shadow-[0_18px_40px_-16px_rgb(28_43_58/0.6)]"
+              className="flex h-14 flex-1 items-center justify-center gap-3 rounded-full bg-placa font-semibold text-bata shadow-[0_18px_40px_-16px_rgb(28_43_58/0.6)] ring-1 ring-white/20"
             >
               <span className="grid size-8 place-items-center rounded-full bg-encia text-white">
                 <Phone className="size-4" strokeWidth={2.4} />

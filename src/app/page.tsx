@@ -1,7 +1,6 @@
 import { FichaDental } from "@/components/FichaDental";
-import { Horario } from "@/components/Horario";
 import { Portada } from "@/components/Portada";
-import { Clinica, Padi, QueTePasa } from "@/components/Secciones";
+import { Cierre, QueTePasa } from "@/components/Secciones";
 
 export default function Home() {
   return (
@@ -9,9 +8,7 @@ export default function Home() {
       <Portada />
       <QueTePasa />
       <FichaDental />
-      <Padi />
-      <Clinica />
-      <Horario />
+      <Cierre />
     </main>
   );
 }

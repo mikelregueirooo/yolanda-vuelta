@@ -25,6 +25,21 @@ function Semana() {
   const ahora = useAhora();
   return (
     <div className="rounded-[28px] bg-white p-5 shadow-[0_1px_0_var(--color-linea)] sm:p-8">
+      {/* Móvil: lista sencilla */}
+      <dl className="sm:hidden">
+        {HORARIO.map((tramos, d) => {
+          const hoy = ahora?.dia === d;
+          return (
+            <div key={d} className={`flex items-baseline justify-between gap-4 rounded-xl px-3 py-3 ${hoy ? "bg-babero" : ""}`}>
+              <dt className={hoy ? "font-bold" : "text-sonda"}>{hoy ? `Hoy, ${DIAS[d].toLowerCase()}` : DIAS[d]}</dt>
+              <dd className={`text-right ${hoy ? "font-semibold" : ""}`}>
+                {tramos.length ? tramos.map(([x, y]) => `${fmt(x)} a ${fmt(y)}`).join(" y ") : "Cerrado"}
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
+      <div className="hidden sm:block">
       <div className="flex gap-4 pb-3">
         <span className="w-10 shrink-0 sm:w-24" />
         <div className="relative h-4 flex-1 text-[0.75rem] tabular-nums text-sonda">
@@ -75,6 +90,7 @@ function Semana() {
       <p className="mt-4 flex items-center gap-2 text-[0.82rem] text-sonda">
         <span aria-hidden className="inline-block h-3.5 w-0.5 rounded-full bg-encia" /> Hora actual en Vitoria-Gasteiz
       </p>
+      </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
-import { ahoraEnVitoria, CLINICA, estadoClinica, textoEstado, type Estado as TEstado } from "@/lib/clinica";
+import { ahoraEnVitoria, CLINICA, estadoClinica, fmt, HORARIO, textoEstado, type Estado as TEstado } from "@/lib/clinica";
 
 /** Estado abierto/cerrado en hora de Vitoria. null hasta que monta en el cliente. */
 export function useEstado() {
@@ -28,6 +28,24 @@ export function Estado({ className = "", claro = false }: { className?: string; 
         className={`size-2 rounded-full ${estado?.abierto ? "bg-[#3f9b72]" : estado ? "bg-encia" : "bg-linea"}`}
       />
       {estado ? textoEstado(estado) : null}
+    </p>
+  );
+}
+
+/** El horario de hoy en una línea, en hora de Vitoria. */
+export function HoyHorario({ className = "" }: { className?: string }) {
+  const [dia, setDia] = useState<number | null>(null);
+  useEffect(() => {
+    const tick = () => setDia(ahoraEnVitoria().dia);
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, []);
+  if (dia === null) return <p className={`mt-2 min-h-6 ${className}`} />;
+  const tramos = HORARIO[dia];
+  return (
+    <p className={`mt-2 min-h-6 font-semibold ${className}`}>
+      Hoy: {tramos.length ? tramos.map(([a, b]) => `${fmt(a)} a ${fmt(b)}`).join(" y ") : "cerrado"}
     </p>
   );
 }
