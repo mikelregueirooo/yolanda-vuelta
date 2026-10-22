@@ -76,6 +76,8 @@ export function Portada() {
   });
   const textoOpacidad = useTransform(avance, [0, 0.1], [1, 0]);
   const textoY = useTransform(avance, [0, 0.1], [0, -32]);
+  // Oculto del todo al terminar de desvanecerse, para que Safari no deje restos pintados.
+  const textoVisible = useTransform(avance, (v) => (v >= 0.1 ? "hidden" : "visible"));
   const indiceOpacidad = useTransform(avance, [0.14, 0.2, 0.95, 1], [0, 1, 1, 0]);
   const pistaOpacidad = useTransform(avance, [0, 0.04], [1, 0]);
   const finalOpacidad = useTransform(avance, [0.9, 0.97], [0, 1]);
@@ -92,16 +94,12 @@ export function Portada() {
 
         <div className="pointer-events-none relative mx-auto flex h-full max-w-[1280px] flex-col px-4 pt-24 sm:px-8 lg:justify-center lg:pt-0">
           {/* Portada */}
-          <motion.div style={{ opacity: textoOpacidad, y: textoY }} className="pointer-events-auto max-w-[34rem]">
-            <motion.h1
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
-              className="t-portada max-w-[10ch]"
-            >
-              Tu dentista en Zabalgana
-            </motion.h1>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.2 }}>
+          <motion.div
+            style={{ opacity: textoOpacidad, y: textoY, visibility: textoVisible }}
+            className="pointer-events-auto max-w-[34rem]"
+          >
+            <h1 className="t-portada entrada max-w-[10ch]">Tu dentista en Zabalgana</h1>
+            <div className="entrada-tarde">
               <p className="mt-5 max-w-[24rem] text-[1.1rem] leading-relaxed text-placa/80">
                 Más de {CLINICA.anos} años cuidando dientes en Vitoria-Gasteiz.
               </p>
@@ -109,7 +107,7 @@ export function Portada() {
                 <Llamar cta="llamar-portada" />
                 <Estado />
               </div>
-            </motion.div>
+            </div>
           </motion.div>
 
           {/* Capas de la muela. En el móvil van abajo, por encima de la burbuja de WhatsApp. */}

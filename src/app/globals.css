@@ -65,6 +65,21 @@ body {
   border-radius: 4px;
 }
 
+/* Entrada de la portada. Con `backwards` el texto no se queda en una capa propia al terminar:
+   en Safari de iPhone esa capa no seguía el desvanecido del padre y el titular se quedaba de fondo. */
+@keyframes entrada {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+.entrada {
+  animation: entrada 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.entrada-tarde {
+  animation: entrada 0.7s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
